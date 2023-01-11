@@ -38,7 +38,7 @@ MP-SPDZ can only run on Linux or OS X. This introduction has been written on a v
    3. Download [Ubuntu](https://ubuntu.com/download/desktop), attach the .iso file as a removable media in VirtualBox, and install Ubuntu.
    4. Install a text editor according to your own taste.
 
-> **Tip:** There has been reports of sluggish performance in this setting. The issue was identified to be that the virtual machine did not get access to AVX/AVX2 instructions. To see if this applies to you, open a terminal in the virtual machine, and type
+> **Tip:** There have been reports of sluggish performance in this setting. The issue was identified to be that the virtual machine did not get access to AVX/AVX2 instructions. To see if this applies to you, open a terminal in the virtual machine, and type
 > 
 >     cat /proc/cpuinfo | grep avx
 >
@@ -101,18 +101,18 @@ Starting from line 64, the tutorial is introducing fixed-point numbers. The most
 > **Note:** Contrary to [Wikipedia's definition](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of fixed-point numbers, neither of the parameters `f` and `k` refer to a fraction. Instead, `f` is quite simply the number of binary digits after the decimal point, and `k` is the complete bit length of the number, minus one bit that is used to indicate the sign.
 
 Having completed a demonstration of data types, let's actually perform a distributed computation. The parties are prompted for three numbers each. We have already provided four numbers, and the first from each was read and used on line 19. Line 99&ndash;107 create a two-dimensional matrix (for each player), and reads (secret shares of) the numbers into it. Line 111&ndash;112 go on to compute
-$$
+```math
 \frac{2\cdot 2 + 3\cdot 3 + 4\cdot 4}{2+3+4} = 3.22...
-$$
+```
 Line 117&ndash;122 is a bit of a mouthful. First the parties cooperate to check if the input from player 0 does not sum to 0. The result of the comparison is revealed to both, and used as input to a special branching decorator. If the input was well-formed, the weighted average computed above is revealed to both and printed to screen. If not, the players display an error message.
 
 Finally, the data matrix is multiplied with the permutation matrix
-$$
+```math
 \begin{pmatrix}
 0 & 1 \\ 
 1 & 0
 \end{pmatrix},
-$$
+```
 which just swaps the columns of the data matrix.
 
 ## Our own program
@@ -135,13 +135,13 @@ y = sint.get_input_from(1)
 ```
 
 To check if the point $(x, y)$ is indeed inside the circle, we need to check if 
-$$
+```math
 \sqrt{(x-x_0)^2 + (y-y_0)^2} < r,
-$$
+```
 but this is equivalent to checking that
-$$
+```math
 (x-x_0)^2 + (y-y_0)^2 - r^2 < 0.
-$$
+```
 The advantage of the latter is that it will only involve integers.
 ```python
 acc = sint(0)
