@@ -158,7 +158,7 @@ print_ln_to(2, '%s', inside_revealed)
 ```
 Save the file, and return to your terminal and go to the MP-SPDZ root folder. This time, you might want to open three terminal windows side-by-side.
 
-In one of the terminals, type `./compile.py ball`. As this program has three players, we can't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833), which scales well with many players. To use ATLAS, we must assume semi-honest adversaries and an honest majority.
+In one of the terminals, type `./compile.py ball`. For the sake of variation variation, we won't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833). To use ATLAS, we must assume semi-honest adversaries and an honest majority.
 
 In the three terminals, run respectively
 ```bash
