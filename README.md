@@ -74,11 +74,13 @@ Hey, it works! (But, exactly *what* works?)
 
 ### The tutorial, step by step
 
-[Open the tutorial file](https://github.com/data61/MP-SPDZ/blob/master/Programs/Source/tutorial.mpc) in `Programs/Source/tutorial.mpc`. Don't get fooled by Ubuntu claiming this to be a media file, you can open it in any text editor of your choice.
+[Open the tutorial file](https://github.com/data61/MP-SPDZ/blob/master/Programs/Source/tutorial.mpc) in `Programs/Source/tutorial.mpc`. Don't get fooled by the Ubuntu GUI claiming this to be a media file, you can open it in any text editor of your choice.
 
-Line 1&ndash;6 introduce the datatype *secure integer*, `sint`, and initialises two variables `a = sint(1); b = sint(2)`. Line 8&ndash;41 demonstrate that all the common operators work just fine with `sint`. However, in order to print an `sint`, we need to call the `reveal()` method.
+Line 1&ndash;6 introduce the datatype *secret integer*, `sint`, and initialises two variables `a = sint(1); b = sint(2)`. Line 8&ndash;41 demonstrate that all the common operators work just fine with `sint`. However, in order to print an `sint`, we need to call the `reveal()` method. 
 
-At first, this may seem arduous. In particular, `a` and `b` are *known* secure integers, so why bother? This is made clear in line 18&ndash;19. Here, the program reads an integer from each of the players. However, instead of having the value in the clear, it will be shared among the players. In order to print it, it must first be revealed to both parties.
+> **Note:** The data type is not just a list of binary numbers in memory: it also adds a layer of abstraction over the fact that the actual number may not exist at any one place. In order to see the number, we may have to reconstruct it from the secret shares held by the parties, hence the need for `reveal()`
+
+At first, this may seem arduous. In particular, `a` and `b` are *known* secret (erm ...) integers, so why bother? This is made clear in line 18&ndash;19. Here, the program reads an integer from each of the players. However, instead of having the value in the clear, it will be shared among the players. In order to print it, it must first be revealed to both parties.
 
 The exact manner of how the value is shared depends on the underlying protocol.
 
@@ -95,7 +97,7 @@ else:
 ```
 Line 49&ndash;55 go on to demonstrate arrays and looping. Again, we need to write our control structure slightly different to what we otherwise would have done. The reason for this is that the Python code is unrolled compile-time, and could suffer performance penalties. If we actually want to do a run-time loop, we need to use the special decorators `@for_range()`, `@for_range_opt()` or `@for_range_opt_multithread()`. The `opt` bit stands for *optimised*. 
 
-Line 49 (`a = Array(100, sint)`) defines an array of 100 `sint` values. We can then loop over them, and assign `i * (i-1)` to `a[i]`. Lo and behold, it works. Notice the comment on line 57&ndash;62: if you were to run that snippet, `a` would not change after the loop. It is not possible to loop on a secret value.
+Line 49 (`a = Array(100, sint)`) defines an array of 100 `sint` values. We can then loop over them, and assign `i * (i-1)` to `a[i]`. Lo and behold, it works. Notice the comment on line 57&ndash;62: if you were to run that snippet, `a` would not change after the loop. It is not possible to loop on a secret value. (Why? Each player is running and observing every instruction. If we where to run the loop a secret number of times, the players could just count to get get the secret number.)
 
 Starting from line 64, the tutorial is introducing fixed-point numbers. The most crucial property is that we must specify the precision we want to work with. The limitations [are laid out in the documentation](https://mp-spdz.readthedocs.io/en/latest/Compiler.html?#Compiler.types.sfix.set_precision). In most other aspects, they work just as the integers, as demonstrated up to line 90.
 > **Note:** Contrary to [Wikipedia's definition](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of fixed-point numbers, neither of the parameters `f` and `k` refer to a fraction. Instead, `f` is quite simply the number of binary digits after the decimal point, and `k` is the complete bit length of the number, minus one bit that is used to indicate the sign.
@@ -158,7 +160,9 @@ print_ln_to(2, '%s', inside_revealed)
 ```
 Save the file, and return to your terminal and go to the MP-SPDZ root folder. This time, you might want to open three terminal windows side-by-side.
 
-In one of the terminals, type `./compile.py ball`. For the sake of variation variation, we won't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833). To use ATLAS, we must assume semi-honest adversaries and an honest majority.
+In one of the terminals, type `./compile.py ball`. For the sake of variation variation, we won't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833). To use ATLAS, we must assume semi-honest adversaries and an honest majority. There might be some warnings, but we can safely ignore those.
+
+The protocol will transmit data between the instances, and we want to do it in a secure way. Therefore, we must set up certificates. Fortunately, this is a one-command process. In the terminal, type `Scripts/setup-ssl-sh 3`. If you want to run more than 3 instances, replace 3 with the number of your choice.
 
 In the three terminals, run respectively
 ```bash
@@ -168,7 +172,7 @@ In the three terminals, run respectively
 ```
 This will run the binaries for a party in the ATLAS protocol. The first argument indicates which party one is. `-I` says that we will provide input interactively, `-N 3` tells the protocol that there will be three players, and finally `-T 1` says that we should accept a single semi-honest player.
 
-All three instances will prompt the user for input. For player 0, input the centre and radius, for instance `2 2 4`. For player 1, input a point, say `0 0`. For player 2, simply press Enter.
+All three instances will prompt the user for input. For player 0, input the centre and radius, for instance `2 2 4`. Enter the inputs on a single line, and press Enter. For player 1, input a point, say `0 0`. For player 2, simply press Enter.
 
 Eventually, the programs will end. Notice that the output from player 2 will contain a bit indicating whether the point was inside the ball or not. Player 0 and 1 are none the wiser; they only know their own input.
 
