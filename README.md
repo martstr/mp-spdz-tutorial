@@ -58,19 +58,27 @@ MP-SPDZ can only run on Linux or OS X. This introduction has been written on a v
 
 MP-SPDZ includes a tutorial, in the form of a particular source file in `Programs/source/`. Let's start by running it, to verify that it works (and to see that it is indeed really simple to run programs here).
 
-  1. Run `./compile.py tutorial`. You will see an output to tell you estimated characteristics of the program. The program will have two players cooperate to compute a number of simple functions.
-  2. The players need input. In some cases, we can provide it interactively, but for now, let's just provide input files.
+  1. First of all, the players need input. In some cases, we can provide it interactively, but for now, let's just provide input files.
 
          echo 1 2 3 4 > Player-Data/Input-P0-0
          echo 1 2 3 4 > Player-Data/Input-P1-0
 
   3. We can now run both parties within a single terminal window. Run
 
-         Scripts/mascot.sh tutorial
+         Scripts/compile-run.py -E mascot tutorial
+         
+     You can inspect the Python file if you want. It does what we'd expect from the name: It parses any arguments, compiles the program into bytecode, and executes the over the default (here: 2) number of players using the [MASCOT protocol](https://eprint.iacr.org/2016/505.pdf).
 
-     Again, you can inspect the shell file if you'd like. It will call `run-common.sh`, which essentially runs each player on their own port, using the [MASCOT protocol](https://eprint.iacr.org/2016/505.pdf).
+     Again, you can inspect the shell file if you'd like. It will call `run-common.sh`, which essentially runs each player on their own port, using the .
 
 Hey, it works! (But, exactly *what* works?)
+
+> **Note:** Running a program was slightly simplified in MP-SPDZ 0.3.5. In earlier versions, we had to compile and execute in separate operations:
+>
+>     ./compile.py tutorial
+>     Scripts/mascot.sh tutorial
+> 
+> Of course, these scripts are still available.
 
 ### The tutorial, step by step
 
@@ -160,7 +168,7 @@ print_ln_to(2, '%s', inside_revealed)
 ```
 Save the file, and return to your terminal and go to the MP-SPDZ root folder. This time, you might want to open three terminal windows side-by-side.
 
-In one of the terminals, type `./compile.py ball`. For the sake of variation variation, we won't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833). To use ATLAS, we must assume semi-honest adversaries and an honest majority. There might be some warnings, but we can safely ignore those.
+In one of the terminals, type `./compile.py ball`. For the sake of variation, we won't use the MASCOT protocol anymore. Instead, we'll use [ATLAS](https://eprint.iacr.org/2021/833). To use ATLAS, we must assume semi-honest adversaries and an honest majority. There might be some warnings, but we can safely ignore those.
 
 The protocol will transmit data between the instances, and we want to do it in a secure way. Therefore, we must set up certificates. Fortunately, this is a one-command process. In the terminal, type `Scripts/setup-ssl-sh 3`. If you want to run more than 3 instances, replace 3 with the number of your choice.
 
