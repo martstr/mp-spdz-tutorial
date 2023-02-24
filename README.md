@@ -69,8 +69,6 @@ MP-SPDZ includes a tutorial, in the form of a particular source file in `Program
          
      You can inspect the Python file if you want. It does what we'd expect from the name: It parses any arguments, compiles the program into bytecode, and executes the over the default (here: 2) number of players using the [MASCOT protocol](https://eprint.iacr.org/2016/505.pdf).
 
-     Again, you can inspect the shell file if you'd like. It will call `run-common.sh`, which essentially runs each player on their own port, using the .
-
 Hey, it works! (But, exactly *what* works?)
 
 > **Note:** Running a program was slightly simplified in MP-SPDZ 0.3.5. In earlier versions, we had to compile and execute in separate operations:
